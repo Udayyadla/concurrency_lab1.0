@@ -25,7 +25,7 @@ class ExperimentRun(models.Model):
     iterations = models.PositiveIntegerField(default=1000000)
     io_sleep_ms = models.PositiveIntegerField(default=100)
     io_operations = models.PositiveIntegerField(default=10)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     total_duration_ms = models.FloatField(null=True, blank=True)
     started_at = models.DateTimeField(null=True, blank=True)
     finished_at = models.DateTimeField(null=True, blank=True)
@@ -35,7 +35,8 @@ class ExperimentRun(models.Model):
 
 
     def __str__(self):
-        return f"{self.name}-{self.concurrency_model}-{self.workload_types}"
+        label = self.name or f"run-{self.pk or 'new'}"
+        return f"{label}-{self.concurrency_model}-{self.workload_types}"
 
 class WorkerResult(models.Model):
     experiment_run = models.ForeignKey(ExperimentRun, on_delete=models.CASCADE, related_name='worker_results')

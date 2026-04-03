@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import ExperimentRun, WorkerResult 
 
-class WokerResultSerializer(serializers.ModelSerializer):
+class WorkerResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkerResult
         fields = [
@@ -27,8 +27,11 @@ class ExperimentRunSerializer(serializers.ModelSerializer):
             "workers",
             "iterations",
             "io_sleep_ms",
-            "io_operations"
+            "io_operations",
+            "status",
+            "created_at",
         ]
+        read_only_fields = ["id", "status", "created_at"]
 
     def validate_workers(self, value):
         if value < 1:
@@ -55,7 +58,7 @@ class ExperimentRunSerializer(serializers.ModelSerializer):
         return attrs
 
 class ExperimentRunDetailSerializer(serializers.ModelSerializer):
-    worker_results = WokerResultSerializer(many=True,read_only=True)
+    worker_results = WorkerResultSerializer(many=True, read_only=True)
     class Meta:
         model = ExperimentRun
         fields = [
